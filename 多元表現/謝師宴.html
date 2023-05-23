@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-TW">
+<title>多元表現</title>
+<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81qKO6V-7fQLk6PhFlWxyxRCAQSbZGTxJlcZkHQ0NEjBnfEBkXi4HYM7al8roJqdqm7rE2lY9w985ise-4ntkj-SOiOynw=s1600">
+<!--This is the file for https://wayne931121.github.io/多元表現/謝師宴.html -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{overflow:hidden;}
+.img{
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    animation-name: example;
+    animation-duration: 10s;}
+#time{
+    z-index: 5;
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+    font-size: 180px;
+    background-color: #f0f8ffa1;
+    border-radius: 90%;
+    height: 30vh;
+    line-height: 30vh;}
+@keyframes example{
+0%{opacity: 0.5;}
+10%{opacity: 1;}
+90%{opacity: 1;}
+100%{opacity: 0.5;}
+}
+#content{
+    z-index: 5;
+    position: absolute;
+    font-size: 250px;
+    font-family: cursive;
+}
+#dp32{
+    z-index: 5;
+    position: absolute;
+    font-size: 100px;
+    font-family: cursive;
+    top: 29%;
+    left: 9%;
+}
+.image{
+    width:100%;
+    height:auto;
+}
+</style>
+</head>
+<body>
+<div id="time"></div>
+<div id="content">謝師宴</div>
+<div id="dp32">資三二</div>
+<script>
+url = [
+"https://i.imgur.com/SC1Mm5J.png",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81rXfhH6Auoh4wcT3HbeCmQLWCpLfyXMz42NajCHpdvtsBk4u9kSK0cm-isz-OuqTGMyrU62qvyhvemJ-QL3YTGJ94tJPA=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81qWeUtst52yCzK-pMmBFx3M8SNt9e7ykenevsLDK9h2cIXBpK4fUul1ozKn2tyvlRMyKXIVZd-NgVjPTuO3Y-VzHfMEdg=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81qpym_ujL9ehbG9H3Iz7sUXDMZ601t1QR891Vkg6rUJudzJu2WJ3L4VD1RCVOO40t4v65_Q64s_4n1cUvx6d5sTvhLjKA=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81q0NTbokNAckuMKXSDapIf-MDz1H3NVZmvrJXP1TPrbt4z_mjNvYpq505KSPKiaavhjRxQCYjElCBa44RLQHwhPae3OuQ=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81oOU7a8LNU9UwxrZ7leYNSZaNDhn32lbBFtK-Xz9ncXxLTiumAuq7-8ieQ7lNx34BkKnxcpu9fsdJvt1P7ACG4d0hpW_g=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81pXNlNb8zx2cTtf0npmIdJZ6W1i5VMKTzReuwB9_Kbn2jtEOcV2c5iK9syBJpaRxmJrIjVJp4ps2xI7kk3D5GgnowAV=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81oP3nNWiiuf5a7EWHEykqNmWBAd_p3_alUgccwsxTjXbFyfwyNotlNkPX2T21IX0-YYbOlPseF-7gl4mpg0ZorGwsjj9Q=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81qXHv5FTqJtltGgO_XzWq6RV4fm9bnr-iLGTJSRWzP53bbaQ5PxASeAiP7hPcx9WTj1L3A8DNBK2MgVSdzmf0fWArnK=s1600",
+"https://images6.alphacoders.com/726/726392.png",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81qN-QGYrUc_gYSMNWdm6VHCuyjI0FVPAfCheZUXSacIXqr_jPVNS55TFyay96fXvtE5fvQoRHMvkDfdJEol8Pj3-624=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81oFnFsquyhY2LbuqcpjIeX5YytNPKYrhB3bUevWF_Ah1HuTt6LvIOTYTVxFHofcQupti_zL2QhHdWGKvJqrpChPiQYC1Q=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81od0-UYadbcEt-Pm6YUs0ERVORHmpKaqFUoHVo0F69oNpfdG3VO-ka1vyEXDBnA2eqMxLCQE1WEdoD9doCGqflO1Wi-HQ=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81pAlQjqir3_qiyadnkeHcM7Oy9vPowwYmEMdhFPJrGC1xaKtwGAjzQWNYFA_a0McgGKJHaBjK8Jm2VbOtDXy59TloV4kw=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81oSTQ5i8F_-W0GjSyPG5ckMCpvRsGoSZdLFS_3BBxRrWnhI7UZIgDz5g4X9EhHJWVF4u-fiQuErEwm0ptkzG9QNTgHsbA=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81oroMKhrNnaop9SvytkpuC-2WsLNfCJCoQJbr23rh3NJpFMz-C-YyRroLvjovL6neRatyLmhtLFAkWOhhQj7EShKAqY=s1600",
+"https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81rMSGatc6doJ-WHoPcpQQ4rvUsbTLrD814dYIkUHb69wIkQ3FYeLT2xdSANyhL_qDGcOsYc8Q7T9f9CpHNZ_x0cEXn9ww=s1600"
+]
+for(i=0;i<url.length;i++){
+e = document.createElement("div");
+e.setAttribute("class","img");
+e1 = document.createElement("img");
+e1.setAttribute("src",url[i]);
+e1.setAttribute("class","image");
+e.setAttribute("style","display: none;");
+e.appendChild(e1);
+document.body.appendChild(e);}
+c=0;img = document.getElementsByClassName("img");time=document.getElementById("time");
+img[c].setAttribute("style",img[c].getAttribute("style").split("display")[0]+"display:block;");
+
+function setDisplay(){if(c-1>=0){p=c-1}else{p=img.length-1;}
+img[p].setAttribute("style",img[p].getAttribute("style").split("display")[0]+"display:none;");
+img[c].setAttribute("style",img[c].getAttribute("style").split("display")[0]+"display:block;");
+c=c+1;if(c==img.length){c=0;}}
+function setTime(){time.innerHTML=new Date().toString().split(" ")[4];}
+setInterval(setTime,500)
+setInterval(setDisplay,10000)
+</script>
+</body>
+</html>
