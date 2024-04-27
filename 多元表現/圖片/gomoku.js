@@ -13,11 +13,11 @@ function command(e){
 		//console.log(3,game.length);
 		setGame(Number(spN.id.substring(2)),c2d[us]);
 		//console.log(4,game.length);
-		if(!didwewin()){
+		//if(!didwewin()){
 		    //console.log(5,game.length);
 		    computerSelect();
 			//console.log(6,game.length);
-		}
+		//}
 	}
 }
 function getColor(e){return e.style.backgroundColor;}
@@ -25,13 +25,14 @@ function setColor(e,c){e.style.backgroundColor=c;}
 function getGame(){game="";for(i=0;i<sp.length;i++){game+=c2d[getColor(sp[i])];}return game;}
 function setGame(p,c){game=game.replaceAt(p,p+1,c);}
 function adc(e,c){e.classList.add(c);}
+function setAll(position,color){setGame(position,c2d[color]);setColor(sp[position],color);}
 function computerSelect(){
+	if(didwewin()){return;}
     gj=game;
 	global_lock=true;
 	getGame();
 	let position=f222(game);
-	setGame(position,c2d[cm]);
-	setColor(sp[position],cm);
+	setAll(position,cm);
 	global_lock=false;
 	didwewin();
 	last=position;
@@ -44,16 +45,17 @@ function check(){
 	}
 }
 function get2Dw15(x1,y1){w=15;return w*y1+x1;}
+function iffilled(){let f=true;for(i=0;i<sp.length;i++){if(getColor(sp[i])==""){f=false;break;}}return f;}
 function didwewin(){
+	if(full){return 1;}
     let x=ifwin(game);full=true;
     if(x==computerID){document.getElementById("score").innerHTML="你輸了";return 1;}
 	else if(x==playerID){document.getElementById("score").innerHTML="你贏了";return 1;}
-	else{
-	    for(i=0;i<sp.length;i++){if(getColor(sp[i])==""){full=false;break;}}
-	}
+	else{full=iffilled()}//是否棋盤已滿
 	if(full){document.getElementById("score").innerHTML="平手";return 1;}
 	return 0;
 }
+function letU(){if(last==undefined){last=randomInt(sp.length-1);setAll(last,cm);}else{computerSelect();}}
 function changeAll(){for(i=0;i<sp.length;i++){setColor(sp[i],cc2d[game[i]]);}}
 var global_lock=false,full=false,gj,last,mode="自動";
 let div='<div class="s"></div>',htm="",mw=window.document.getElementById("mw"),us="white",cm="black";/*user & computer*/
