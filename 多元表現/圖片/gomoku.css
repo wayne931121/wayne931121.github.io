@@ -1,0 +1,141 @@
+body {font-family: "Times New Roman", Georgia, Serif;
+    line-height:0;
+    margin: 0;
+    padding: 0;
+    background-color: #b0ba48f7;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Playfair Display";
+  letter-spacing: 5px;
+}
+.s{background: url(five.jpg);
+    background-repeat: no-repeat;
+    background-size: 11px;
+    height: 11px;
+    width: 11px;
+}
+.s1{
+    height: 54px;
+    width: auto;
+}
+.main{
+    position: relative;
+    margin: auto;
+	width: 810px;
+	border: 1px solid #b0ba48f7;
+}
+/*.main>div{
+    position: absolute;
+    background-color: white;
+}*/
+/*
+#left, #right{
+    width: 5.69px;
+    height: 180px;
+}
+#top, #bottom{
+    width: 180px;
+    height: 5.69px;
+}
+.main>#left{
+    top: 0;
+    left: 0;
+}
+.main>#right{
+    top: 0;
+    right: 0;
+}
+.main>#top{
+    top: 0;
+	right: 0;
+}
+.main>#bottom{
+    bottom: 0;
+	right: 0;
+}*/
+.d2{
+    position: relative;
+    display:inline-block;
+	margin:0;
+	padding=0;
+}
+.dot {
+    height: 45px;
+    width: 45px;
+    position: absolute;
+    top: 4.5px;
+    left: 4.5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.black{
+    background-color: black;
+}
+.white{
+    background-color: white;
+}
+
+.normal{
+	line-height: normal;
+}
+
+#score{
+    font-size: 48px;
+    position: fixed;
+    top: 40px;
+    left: 3px;
+    font-family: cursive;
+}
+
+#check{
+    position: fixed;
+    top: 72px;
+	left: 6px;
+    font-size: 30px;
+    padding: 3px;
+}
+
+#mode{
+	position: fixed;
+	top: 180px;
+	left: 3px;
+    font-size: 30px;
+}
+
+#reset{
+    position: fixed;
+    bottom: 30px;
+    left: 6px;
+    font-size: 30px;
+}
+
+select{
+	font-size: 30px;
+}
+
+@media (max-width:900px){
+.main {
+    position: absolute;
+    top: 180px;
+    margin: auto;
+    width: 405px;
+}
+.s1 {
+    height: 27px;
+    width: auto;
+}
+.dot {
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    top: 1.5px;
+    left: 1.5px;
+	display: inline-block;
+}
+
+#mode {
+    top: 702px;
+}
+
+}
