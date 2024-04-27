@@ -135,7 +135,8 @@ select{
 }
 
 #mode {
-    top: 702px;
+    top: unset;
+    bottom: 120px; 
 }
 
 }
