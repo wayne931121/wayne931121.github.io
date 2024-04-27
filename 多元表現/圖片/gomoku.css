@@ -135,8 +135,12 @@ select{
 }
 
 #mode {
-    top: unset;
-    bottom: 120px; 
+	top: unset;
+    bottom: 117px;
+}
+
+#mode div{
+	display: none;
 }
 
 }
