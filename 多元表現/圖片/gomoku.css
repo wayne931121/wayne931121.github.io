@@ -110,6 +110,13 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 30px;
 }
 
+#letU{
+    position: fixed;
+    bottom: 90px;
+    left: 6px;
+    font-size: 30px;
+}
+
 select{
 	font-size: 30px;
 }
@@ -141,6 +148,11 @@ select{
 
 #mode div{
 	display: none;
+}
+
+#letU {
+    bottom: 30px;
+    left: 87px;
 }
 
 }
