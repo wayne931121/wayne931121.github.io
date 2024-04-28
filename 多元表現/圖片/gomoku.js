@@ -46,6 +46,8 @@ function check(){
         setTimeout(function(){setColor(sp[last],lastColor);}, 500);
 	}
 }
+function labelAnime(e){anime(e,'#e7e6e6','#efefef',270);}
+function anime(e,originalColor,newColor,timeMilliSecond){/*element*/setColor(e,newColor);setTimeout(function(){setColor(e,originalColor);}, timeMilliSecond);}
 function get2Dw15(x1,y1){w=15;return w*y1+x1;}
 function iffilled(){let f=true;for(i=0;i<sp.length;i++){if(getColor(sp[i])==""){f=false;break;}}return f;}
 function didwewin(){
