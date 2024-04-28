@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>五子</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="圖片/gomoku.css">
+<style></style>
+</head>
+<body>
+
+<div id="score">進行中</div>
+<button id="check" onclick="check();">確認位置</button>
+<div id="mode">
+<div class="normal">機器模式</div>
+<select onchange="changeMode(this)">
+  <optgroup label="模式">
+    <option value="自動">自動</option>
+    <option value="攻擊">攻擊</option>
+    <option value="防守">防守</option>
+</select>
+</div>
+<button id="letU" onclick="letU();">禮讓</button>
+<button id="reset" onclick="init();">重置</button>
+<label id="letI">承讓<input type='checkbox' onclick='letI(this);'></label>
+<div id="mw" class="main"></div>
+
+<script src="圖片/gomoku.js"></script>
+</body>
+</html>
