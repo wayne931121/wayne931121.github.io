@@ -9,15 +9,16 @@ function command(e){
     spN=e.children.namedItem("sp");
 	//console.log(2,game.length);
 	if(getColor(spN)=="" && !global_lock && !full){
-	    setColor(spN,us);
+		let position = Number(spN.id.substring(2));
+	    setColor(spN,us);//color of user.
 		//console.log(3,game.length);
-		setGame(Number(spN.id.substring(2)),c2d[us]);
+		setGame(position,c2d[us]);//color to digit string, color of user.
 		//console.log(4,game.length);
 		//if(!didwewin()){
-		    //console.log(5,game.length);
-		    computerSelect();
-			//console.log(6,game.length);
-		//}
+		if(isletI)
+		    {didwewin();last=position;lastColor=us;}
+	    else
+		    {computerSelect();}
 	}
 }
 function getColor(e){return e.style.backgroundColor;}
@@ -36,12 +37,13 @@ function computerSelect(){
 	global_lock=false;
 	didwewin();
 	last=position;
+	lastColor=cm;
 	return position;
 }
 function check(){
     if(last!=undefined){
         setColor(sp[last],"aqua");
-        setTimeout(function(){setColor(sp[last],cm);}, 500);
+        setTimeout(function(){setColor(sp[last],lastColor);}, 500);
 	}
 }
 function get2Dw15(x1,y1){w=15;return w*y1+x1;}
@@ -56,8 +58,9 @@ function didwewin(){
 	return 0;
 }
 function letU(){if(last==undefined){last=randomInt(sp.length-1);setAll(last,cm);}else{computerSelect();}}
+function letI(e) {isletI=e.checked;return e.checked;}
 function changeAll(){for(i=0;i<sp.length;i++){setColor(sp[i],cc2d[game[i]]);}}
-var global_lock=false,full=false,gj,last,mode="自動";
+var global_lock=false,full=false,gj,last,mode="自動",isletI=false,lastColor;
 let div='<div class="s"></div>',htm="",mw=window.document.getElementById("mw"),us="white",cm="black";/*user & computer*/
 let c2d={"black":"1","white":"0","":" "};/*computer 1,user 0*//*color to digit*/
 let cc2d={"1":"black","0":"white"," ":""};
