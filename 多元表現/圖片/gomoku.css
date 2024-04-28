@@ -120,15 +120,23 @@ h1, h2, h3, h4, h5, h6 {
 #letI{
     position: fixed;
     bottom: 159px;
-    left: 6px;
-    font-size: 24px;
+    left: 9px;
+    font-size: 30px;
+    background: #efefef;
+    border: 1px solid black;
+    padding: 0.5px 3px 3.5px 3px;
+    line-height: 30px;
 }
 
 #letI input{
-    width: 21px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     position: relative;
     bottom: -3px;
+}
+
+#letI:hover {
+    background: #e7e6e6;
 }
 
 select{
@@ -172,7 +180,7 @@ select{
 #letI{
     right: 30px;
     left: unset;
-    bottom: 42px;
+    bottom: 30px;
 }
 
 }
