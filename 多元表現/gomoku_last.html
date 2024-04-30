@@ -13,11 +13,21 @@
 <button id="check" onclick="check();">確認位置</button>
 <div id="mode">
 <div class="normal">機器模式</div>
-<select onchange="changeMode(this)">
-  <optgroup label="模式">
+<select onchange="changeMode(this)" id="select_mode">
+  <optgroup label="模式1">
     <option value="自動">自動</option>
     <option value="攻擊">攻擊</option>
     <option value="防守">防守</option>
+  </optgroup>
+  <optgroup label="模式2">
+    <option value="貪婪">貪婪</option>
+	<option value="防守">防守</option>
+  </optgroup>
+  <optgroup label="模式3">
+    <option value="自動">自動</option>
+    <option value="攻擊">攻擊</option>
+    <option value="防守">防守</option>
+  </optgroup>
 </select>
 </div>
 <button id="letU" onclick="letU();">禮讓</button>
