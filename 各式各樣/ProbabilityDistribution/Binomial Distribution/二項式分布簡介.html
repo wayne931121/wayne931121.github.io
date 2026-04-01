@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二項式分布簡介 - 統計學基礎</title>
+    <style>
+        body {
+		    overflow-wrap: break-word;
+        }
+        header {
+        }
+        section {
+        }
+        h2 {
+        }
+        .formula {
+        }
+        ul {
+        }
+        li {
+        }
+        footer {
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>二項式分布 (Binomial Distribution)</h1>
+    <p>統計學中最經典的離散機率分布模型</p>
+</header>
+
+<!--
+This file create by me and Gemini
+about me: wayne931121
+
+
+Gemini
+以以下要求寫出一份教學講稿: 用純文字不包含圖片、表情符號和水平分割線，並且用小學生能懂的方式解釋什麼是統計學二項式分布，並包含三個練習題和詳細解釋，文字數量必須大於50小於1000，練習題中至少要有一題能根據題目算出機率、期望值和標準差，並且要對運算做詳細解釋。另外額外介紹二項式分布的英文和別名，另外詳細介紹二項式分布標準差的算法證明，並且額外詳細介紹二項式分布表binomial distribution table和二項式累積分布表cumulative binomial distribution table包括他的內容、行列分別代表什麼
+-->
+
+<p>
+教學主題：神奇的二選一預言家<br>
+<br>
+各位小朋友好！今天我們要來學一個讓你能預測未來的數學工具，叫做二項式分布。
+它的英文名稱是 Binomial Distribution，在數學界也有人稱它為重複伯努利試驗。<br>
+<br>
+生活中有很多事情只有兩種結果，例如丟硬幣只有正面或反面。
+如果你打算連續做好幾次這種二選一的事情，我們可以用這套規則來預測結果。
+要玩這個預言遊戲，有三個規矩：第一，結果只有兩種。第二，每次成功的機會都固定。
+第三，每次嘗試都是獨立的，不會互相影響。<br>
+<br>
+為了方便大家查機率，數學家準備了兩張表。一張是二項式分布表（英文Binomial Distribution Table），
+表格的行通常代表成功的機率，
+列則代表總次數和你想看到的成功次數，
+交叉點就是剛好發生幾次的機率。
+一張是二項式累積分布表（英文Cumulative Binomial Distribution Table），
+它的內容是把發生零次到某次的所有機率加起來，讓你一眼看出成功次數小於或等於某個數字的總機率。<br>
+<br>
+練習題一：誰符合規則<br>
+小明紀錄今天下午看到的每輛汽車是紅色還是不是紅色，他一共看了五十輛車。請問這符合二項式分布嗎？<br>
+詳細解釋：答案是符合。因為結果被簡化成只有兩種：
+紅色或是非紅色。雖然路上有很多顏色的車，但只要我們只關心是不是紅色，它就符合二選一的規則。<br>
+<br>
+練習題二：機率高低直覺<br>
+如果你是神射手，進球率百分之九十。投十球中，進九球的機率跟進一球的機率哪個高？<br>
+詳細解釋：答案是進九球。因為你的成功率很高，二項式分布會讓結果集中在成功次數多的那一邊。<br>
+<br>
+練習題三：預測大師的計算<br>
+小華投籃100次，每球進球率是0.2。請算出他剛好進0球的機率式子、期望值與標準差。<br>
+詳細解釋：<br>
+第一，機率式子：C100取0乘以0.2的0次方，再乘以0.8的100次方。
+C100取0是排列組合的公式寫法，等於100階除以100階除以0階，
+詳細來說C的定義就是C(N取M)等於N偕除以M偕再除以N減M偕，舉例來說C6取2就是6偕除以2偕再除以4偕。
+所謂階就是階乘，例如3偕就是3偕乘等於3乘以2乘以1等於6，而其在數學上可用3驚嘆號來表示，
+而9偕就是9乘以8乘以7乘以6乘以5乘以4乘以3乘以2乘以1等於362880。
+所以以上算式C100取0乘以0.2的0次方，再乘以0.8的100次方，
+等於100階除以0階除以100階乘以0.2的0次方再乘以0.8的100次方，
+等於100階除以1除以100階乘以1再乘以0.0000000002037035976，
+等於1除以1乘以1再乘以0.0000000002037035976，
+等於0.0000000002037035976。
+<br>
+第二，期望值，預期進幾球，為總次數100乘以機率0.2等於20球。<br>
+第三，標準差，結果跳動程度，計算方法是總次數乘以成功率再乘以失敗率，最後開根號。
+算式為100乘以0.2乘以0.8等於16，16開根號等於4。<br>
+
+<br>
+關於標準差算法的證明，首先我們需要知道什麼是平均數(英文Average或Mean)。
+平均數就是加總除以數量，舉例來說1、5、6這三個數的平均數就是1+5+6再除以3，等於12除以3，等於4。
+這種平均數就是一般你所熟知的平均數算法又叫算術平均數(英文Arithmetic Mean)。
+還有一種平均數叫加權平均數(英文Weighted Average，權重英文Weight)，為什麼叫加權平均數呢?
+舉例來說:
+一個學校有2個班級，一個班級有2名學生，另一個班級有3名學生，考試兩個班級學生分數分別為：
+甲班 88和99；
+乙班 77和66和88，
+甲班的算術平均數為88+99再除以2，等於187除以2，等於93.5。
+乙班的算術平均數為77+66+88再除以3，等於231除以3，等於77。
+而甲乙兩班算術平均數為93.5+77再除以2，等於170.5除以2，等於85.25。
+但是這樣的計算沒有考慮每個班級學生數量不同，所以兩班總算術平均數為88+99+77+66+88再除以5，等於418除以5，等於83.6。
+用加權平均數的說法來說，甲班有2位學生，乙班有三位學生，一個權重是2，一個權重是3，
+所以算法為(93.5乘以2)加上(77乘以3)最後再除以(2+3)，全程遵循四則運算先乘除後加減，等於187+231再除以5，等於418除以5
+，等於83.6。
+<br>
+<br>
+為什麼要提到平均數呢?
+因為在機率理論中，將項目發生的機率視作權重，所得到的加權平均數就叫做期望值(英文Expected value)。
+舉例來說發生x的機率是p，發生x1的機率是p1，發生x2的機率是p2，期望值就是他們的加權平均數，
+等於(x乘以p)加上(x1乘以p1)加上(x2乘以p2)最後再除以(p1+p2+p3)。而通常機率的總和是1，也就是p1+p2+p3等於1，所以可以忽略。
+整個式子就變成了(x乘以p)加上(x1乘以p1)加上(x2乘以p2)。
+<br>
+<br>
+為什麼要提到期望值呢?
+因為變異數(英文Variance)就是E((x-u)^2)，也就是((項目-平均數)開2次方)取期望值，
+舉例來說有三個數8、4、1，他們的平均數是(8+4+1)/3=4.3333，
+此時8的變異數是
+((8-4.3333)^2)*(1/3)=((8-((8+4+1)/3))^2)*(1/3)=4.4814814814814814814814814814815，
+此時4的變異數是
+((4-4.3333)^2)*(1/3)=((4-((8+4+1)/3))^2)*(1/3)=0.03703703703703703703703703703704，
+此時1的變異數是
+((1-4.3333)^2)*(1/3)=((1-((8+4+1)/3))^2)*(1/3)=3.7037037037037037037037037037037，
+他們三個的變異數是
+4.4814814814814814814814814814815+0.03703703703703703703703703703704+3.7037037037037037037037037037037=
+((8-((8+4+1)/3))^2)*(1/3)+((4-((8+4+1)/3))^2)*(1/3)+((1-((8+4+1)/3))^2)*(1/3)=
+(((8-((8+4+1)/3))^2)+((4-((8+4+1)/3))^2)+((1-((8+4+1)/3))^2))/3=
+8.2222222222222222222222222222222。
+注意8.2222222222222222222222222222222是母體變異數，他們是除以3，也就是乘以3分之1，
+如果是樣本變異數是除以2，除以2是因為他們有3個，依據樣本變異數定義要將3減掉1等於2，
+也就是(((8-((8+4+1)/3))^2)+((4-((8+4+1)/3))^2)+((1-((8+4+1)/3))^2))/2
+=12.333333333333333333333333333333。
+第二個例子有三個數8、4、1，其機率分別為0.1、0.2、0.7，他們的平均數是他們的加權平均數是他們的期望值，也就是:
+((8*0.1)+(4*0.2)+(1*0.7))/(0.1+0.2+0.7)=
+((8*0.1)+(4*0.2)+(1*0.7))/1=
+((8*0.1)+(4*0.2)+(1*0.7))=
+2.3，
+他們三個的變異數是
+((8-2.3)^2)*0.1+((4-2.3)^2)*0.2+((1-2.3)^2)*0.7=
+5.01
+<br>
+<br>
+為什麼要提到變異數呢?
+因為標準差(英文standard deviation，std dev，SD)就是變異數開根號，
+也就是說剛才算出的變異數是5.01，那標準差就是5.01^(1/2)=5.01^0.5=
+2.2383029285599391361039376176564
+<br>
+<br>
+學會了這些，你就能更科學地預測重複發生的事情喔！
+</p>
+
+<p>
+附錄
+練習題三：預測大師的計算<br>
+小華投籃100次，每球進球率是0.2。請算出他剛好進0球的機率式子、期望值與標準差。<br>
+<!--
+Probability mass function(M): 100!/(M!(100-M)!)*(0.2^M)*(0.8^(100-M))
+Mean = Weighted Average = expected value(M): sigma(M=0~100){M*probability mass function(M)}
+Variance: expected value((M-expected value)^2) 
+          = sigma(M=0~100){((M-expected value)^2)*probability mass function(M)}
+Standard Deviation: Variance^0.5
+
+/*Me and Gemini: 用Javascript寫出一個算出N偕乘的函數*/
+function Factorial(n) {
+  // 基礎條件：0! 和 1! 都是 1
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  // 遞迴呼叫
+  return n * Factorial(n - 1);
+}
+
+/*Me : 用javascript寫出排列組合P函數*/
+/*排列（Permutation，符號 P）是指從相異元素中取出元素，並考慮順序的排成一列的方法數。*/
+function P(N,M) {
+  return Factorial(N)/Factorial(N-M);
+  /*P(5,2)=5*4*/
+}
+
+/*Me : 用javascript寫出排列組合C函數*/
+/*組合 (Combination，符號 C) 是指從相異元素中取出元素，不考慮順序的排成一列的方法數。*/
+function C(N,M) {
+  return P(N,M)/Factorial(M);
+  /*C(5,2)=(5*4)/(2!)*/
+}
+
+function BinomialDistributionProbabilityMassFunction(Total,Success,Failed,M){
+    return C(Total,M)*(Success**M)*(Failed**(Total-M));
+}
+
+function BinomialDistributionExpectedValue(Total,Success,Failed,Start,End){
+    let sum=0;
+	for(let i=Start;i&lt;=End;i++){
+	    sum+=i*BinomialDistributionProbabilityMassFunction(Total,Success,Failed,i);
+	}
+    return sum;
+}
+
+function BinomialDistributionVariance(Total,Success,Failed,Start,End){
+    let ExpectedValue = BinomialDistributionExpectedValue(Total,Success,Failed,Start,End); 
+    let sum=0;
+	let P=0;
+	for(let i=Start;i&lt;=End;i++){
+	    P = BinomialDistributionProbabilityMassFunction(Total,Success,Failed,i);
+	    sum+=((i-ExpectedValue)**2)*P;
+	}
+    return sum;
+}
+
+function BinomialDistributionStandardDeviation(Total,Success,Failed,Start,End){
+    return BinomialDistributionVariance(Total,Success,Failed,Start,End)**0.5
+}
+
+BinomialDistributionExpectedValue(100,0.2,0.8,0,100): 20
+BinomialDistributionVariance(100,0.2,0.8,0,100): 16
+BinomialDistributionStandardDeviation(100,0.2,0.8,0,100): 4
+-->
+Probability mass function(M): 100!/(M!(100-M)!)*(0.2^M)*(0.8^(100-M))<br>
+Mean = Weighted Average = expected value(M): sigma(M=0~100){M*probability mass function(M)}<br>
+Variance: expected value((M-expected value)^2) <br>
+          = sigma(M=0~100){((M-expected value)^2)*probability mass function(M)}<br>
+Standard Deviation: Variance^0.5<br>
+<br>
+/*Me and Gemini: 用Javascript寫出一個算出N偕乘的函數*/<br>
+function Factorial(n) {<br>
+  // 基礎條件：0! 和 1! 都是 1<br>
+  if (n === 0 || n === 1) {<br>
+    return 1;<br>
+  }<br>
+  // 遞迴呼叫<br>
+  return n * Factorial(n - 1);<br>
+}<br>
+<br>
+/*Me : 用javascript寫出排列組合P函數*/<br>
+/*排列（Permutation，符號 P）是指從相異元素中取出元素，並考慮順序的排成一列的方法數。*/<br>
+function P(N,M) {<br>
+  return Factorial(N)/Factorial(N-M);<br>
+  /*P(5,2)=5*4*/<br>
+}<br>
+<br>
+/*Me : 用javascript寫出排列組合C函數*/<br>
+/*組合 (Combination，符號 C) 是指從相異元素中取出元素，不考慮順序的排成一列的方法數。*/<br>
+function C(N,M) {<br>
+  return P(N,M)/Factorial(M);<br>
+  /*C(5,2)=(5*4)/(2!)*/<br>
+}<br>
+<br>
+function BinomialDistributionProbabilityMassFunction(Total,Success,Failed,M){<br>
+    return C(Total,M)*(Success**M)*(Failed**(Total-M));<br>
+}<br>
+<br>
+function BinomialDistributionExpectedValue(Total,Success,Failed,Start,End){<br>
+    let sum=0;<br>
+	for(let i=Start;i&lt;=End;i++){<br>
+	    sum+=i*BinomialDistributionProbabilityMassFunction(Total,Success,Failed,i);<br>
+	}<br>
+    return sum;<br>
+}<br>
+<br>
+function BinomialDistributionVariance(Total,Success,Failed,Start,End){<br>
+    let ExpectedValue = BinomialDistributionExpectedValue(Total,Success,Failed,Start,End); <br>
+    let sum=0;<br>
+	let P=0;<br>
+	for(let i=Start;i&lt;=End;i++){<br>
+	    P = BinomialDistributionProbabilityMassFunction(Total,Success,Failed,i);<br>
+	    sum+=((i-ExpectedValue)**2)*P;<br>
+	}<br>
+    return sum;<br>
+}<br>
+<br>
+function BinomialDistributionStandardDeviation(Total,Success,Failed,Start,End){<br>
+    return BinomialDistributionVariance(Total,Success,Failed,Start,End)**0.5<br>
+}<br>
+<br>
+BinomialDistributionExpectedValue(100,0.2,0.8,0,100): 20<br>
+BinomialDistributionVariance(100,0.2,0.8,0,100): 16<br>
+BinomialDistributionStandardDeviation(100,0.2,0.8,0,100): 4
+</p>
+
+</body>
+</html>
