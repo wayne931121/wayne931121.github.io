@@ -25,7 +25,7 @@
     <h1>卜瓦松分佈機率表生成器</h1>
     
     <div class="input-group">
-        <label for="LambdaT-input">平均發生率 (λ):</label>
+        <label for="LambdaT-input">平均發生率 (λ*t):</label>
         <input type="number" id="LambdaT-input" value="2.5" min="0.001" step="0.1">
         
     <!--    <label for="k-max-input">最大顯示次數 (k):</label>
@@ -35,6 +35,9 @@
     </div>
 
     <div id="result-area">
+		<div class="summary" id="ProbabilityMassFunction">
+		   機率質量函數PMF: ( ((λ*t)^x) * (e^(-λ*t)) ) / x!
+		</div>
         <div class="summary" id="stats-summary"></div>
         <table id="distribution-table">
             <thead>
