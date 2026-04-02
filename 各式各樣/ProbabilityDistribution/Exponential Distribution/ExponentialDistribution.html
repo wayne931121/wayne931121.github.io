@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<!--Me & Gemini
+以這個網頁為模板，將他改造成指數分布網頁，
+這個網頁有幾個功能
+首先有一個input框輸入lambda後計算出符合指數分布的期望值、變異數和標準差
+再來有一個input框輸入k後計算出符合指數分布小於k時的機率和大於k時的機率
+再來有兩個input框輸入m,n後計算出符合指數分布大於m小於n時的機率
+https://wayne931121.github.io/%E5%90%84%E5%BC%8F%E5%90%84%E6%A8%A3/ProbabilityDistribution/Poisson%20Distribution/PoissonDistribution.html
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>指數分佈計算器 (Exponential Distribution)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; line-height: 1.6; background-color: #f8f9fa; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #333; text-align: center; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .section { margin-bottom: 25px; padding: 20px; border: 1px solid #e1e4e8; border-radius: 8px; background-color: #ffffff; }
+        h2 { color: #007bff; font-size: 1.2rem; margin-top: 0; }
+        .input-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        label { font-weight: bold; }
+        input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100px; }
+        button { padding: 8px 16px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; transition: 0.3s; }
+        button:hover { background-color: #0056b3; }
+        .result-box { margin-top: 15px; padding: 15px; background-color: #e9ecef; border-left: 5px solid #28a745; border-radius: 4px; }
+        .formula { font-style: italic; color: #666; font-size: 0.9rem; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>指數分佈計算器</h1>
+
+    <div class="section">
+        <h2>1. 基本參數計算 (期望值、變異數)</h2>
+        <p class="formula">公式：E[X] = 1/λ, Var[X] = 1/λ²</p>
+        <div class="input-group">
+            <label for="lambda-input">速率參數 (λ):</label>
+            <input type="number" id="lambda-input" value="0.2" step="0.1" min="0.00001">
+            <button onclick="calculateStats()">計算統計量</button>
+        </div>
+        <div id="stats-result" class="result-box" style="display:none;"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. 單一臨界值機率 P(X < k) 與 P(X > k)</h2>
+        <p class="formula">累積分布函數公式(CDF)：P(X ≤ k) = 1 - e^(-λk)</p>
+        <div class="input-group">
+            <label for="k-input">輸入 k 值:</label>
+            <input type="number" id="k-input" value="3" step="0.1" min="0">
+            <button onclick="calculateKProb()">計算機率</button>
+        </div>
+        <div id="k-result" class="result-box" style="display:none;"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. 區間機率 P(m < X < n)</h2>
+        <p class="formula">公式：P(m < X < n) = P(X < n) - P(X < m)</p>
+        <div class="input-group">
+            <label for="m-input">下限 m:</label>
+            <input type="number" id="m-input" value="4" step="0.1" min="0">
+            <label for="n-input">上限 n:</label>
+            <input type="number" id="n-input" value="7" step="0.1" min="0">
+            <button onclick="calculateRangeProb()">計算區間機率</button>
+        </div>
+        <div id="range-result" class="result-box" style="display:none;"></div>
+    </div>
+	
+<!--
+<p>
+	什麼是微分:微分就是在一個函數中x增加了一個無限小的值y會增加多少或減少多少f(x+(1/Infinity))-f(x)，但是這樣給出的答案一定是無限趨近於0，
+	所以為了讓他有意義而不是無限趨近於0，當給出x是多少時我們計算他的切線斜率，也就是(f(x+無限小)-f(x-無限小))/((x+無限小)-(x-無限小))，
+	等於(f(x+無限小)-f(x-無限小))/(無限小*2)，
+	(f(x+(1/Infinity))-f(x-(1/Infinity)))/(2/Infinity)。
+	舉例來說y=2x這個式子將2x對x進行微分，不論x是多少我們都會得到2這個結果。<br>
+
+<pre>
+function n(x) {
+    return 2*x; //differential: 2
+}
+
+function m(x) {
+    return x**2; //differential: 2x
+}
+
+function o(x) {
+    return 3*(x**2)+4*(x**3); //differential: 6x+12(x^2)
+}
+
+function differential(fun,x){
+    let small = 1/(10**9);
+    return (fun(x+small)-fun(x-small))/(small*2);
+}
+
+differential(n,4): 2
+differential(n,8): 2
+differential(m,4): 8
+differential(m,8): 16
+differential(o,9): 1026
+</pre>
+<br>
+    積分就是加總，舉例來說x是1時y是2、x是2時y是6、x是3時y是9，那麼x從1到3的積就是2+6+9=17，在微積分中的積分，舉例來說有一個函數是f(x)，
+	那麼x從0到9的積分就是f(0)+f(0+無限小)+f(0+無限小+無限小)+f(0+無限小+無限小+無限小)......f(9)，也就是直到0一直加無限小等於9就結束。
+	但是這樣得出的結果會是趨近無限大，這沒有意義，所以為了讓他有意義，我們必須再把剛剛得出的結果乘以無限小，這樣才會得出一個有意義的數。
+	積分也可以說是該函數在xy圖中與xy軸的面積。<br>
+<pre>
+function o(x) {
+    return 3*(x**2)+4*(x**3); //integral: x^3+x^4
+}
+
+function integral(fun,start,end,small){
+    if(end<start){return "error: end must bigger than start";}
+    //let small = 1/(10**9);
+	let sum = 0;
+	for(let i=start;i<=end;i+=small){
+	    sum+=fun(i);
+		//console.log(i,sum,(i-start)/(end-start));
+	}
+    return sum*small;
+}
+
+integral(o,8,10,1)
+9699
+integral(o,8,10,0.1)
+6719.369999999992
+integral(o,8,10,0.01)
+6424.703699999954
+integral(o,8,10,0.001)
+6395.270036998788
+integral(o,8,10,0.0001)
+6392.327000364845
+integral(o,8,10,0.00001)
+6392.032699920213
+integral(o,8,10,0.000001)
+6392.0032683476065
+integral(o,8,10,0.0000001)
+6392.00031358065
+
+small越小越貼近原函數面積，所以函數3*(x**2)+4*(x**3)，x從8到10的積分為6392。
+</pre><br>
+積分的相反就是微分，微分的相反就是積分，所以你可以將積分看為反微分，微分看為反積分。<br><br>
+
+
+	指數分布機率密度函數Probability Density Function公式：PDF(X = k) = λ * e^(-λk)，
+	而他的積分所得到的新函數就是累積機率函數(累積分布函數 Cumulative Distribution Function): P(X ≤ k) = 1 - e^(-λk)。
+	而累積分布函數微分就可以得到瞬間機率函數(機率密度函數Probability Density Function)： PDF(X = k) = λ * e^(-λk)。
+	而瞬間機率函數乘以X，X從0到無限的加總，就是從0到無限的積分，就是期望值(所有項目和項目機率的加權平均數，所有機率總和必須為1): E(X = 0~無限) 
+	= 積分(X = 0~無限)[x* (λ * e^(-λx))]:
+<pre>
+function EXPDF(x) {
+    let lambda = 1.5;
+	let P = (lambda * Math.exp(-1*lambda*x));
+	if(P<0.00000000000000000001){return "Error";}
+    return x*P;
+}
+
+function integral(fun,start,end,small){
+    if(end<start){return "error: end must bigger than start";}
+    //let small = 1/(10**9);
+	let sum = 0;
+	for(let i=start;i<=end;i+=small){
+	    let E = fun(i);
+		if(E=="Error"){break;}
+	    sum+=E;
+		//console.log(i,sum,(i-start)/(end-start));
+	}
+    return sum*small;
+}
+
+integral(EXPDF,0,Infinity,1)
+0.5545657111178578
+integral(EXPDF,0,Infinity,0.1)
+0.6654180716620743
+integral(EXPDF,0,Infinity,0.01)
+0.6666541668072907
+integral(EXPDF,0,Infinity,0.001)
+0.6666665416666898
+integral(EXPDF,0,Infinity,0.0001)
+0.666666665416275
+
+small越小越貼近原函數面積，lambda=1.5，指數分布的期望值為0.666。
+</pre><br>
+	而變異數就是(X-期望值)^2和項目機率的加權平均數，也就是
+    (X-所有項目和項目機率的加權平均數)^2和項目機率的加權平均數，也就是
+	(所有項目-所有項目和項目機率的加權平均數)^2和項目機率的加權平均數(注意所有機率總和必須為1)，也就是
+	(所有項目-所有項目的期望值)^2和項目機率的加權平均數(注意所有機率總和必須為1)，也就是
+	(X-X取期望值)^2和項目機率的加權平均數(注意所有機率總和必須為1)，也就是
+	(X-X取期望值)^2再繼續取期望值，也就是
+	[(X-X取期望值)^2]取期望值，也就是
+	期望值((X-期望值(X))^2)，也就是
+	E((X-E(X))^2)，也就是
+	積分(X = 0~無限)[((x - X取期望值)^2) * 機率函數(X)]，也就是
+	積分(X = 0~無限)[((x - X取期望值)^2) * 指數分布機率密度函數(X)]，也就是
+	積分(X = 0~無限)[((x - X取期望值)^2) * (λ * e^(-λx))]，也就是
+	積分(X = 0~無限)[((x - 積分(X = 0~無限)[x* (λ * e^(-λx))])^2) * (λ * e^(-λx))]:
+<pre> 
+function exponential_distribution_probability_density_function(lambda,x){
+    let P = (lambda * Math.exp(-1*lambda*x));
+	if(P<0.00000000000000000001){return "Error";}
+	return P;
+}
+
+function EVPDF(x) { //expected value (EV) exponential distribution probability density function (PDF)
+	let P = exponential_distribution_probability_density_function(lambda,x);
+	if(P=="Error"){return "Error";}
+    return x*P;
+}
+
+function Variance(x){
+    let P = exponential_distribution_probability_density_function(lambda,x);
+	if(P=="Error"){return "Error";}
+    return ( (x-E)**2 )*P
+}
+
+function integral(fun,start,end,small){
+    if(end<start){return "error: end must bigger than start";}
+    //let small = 1/(10**9);
+	let sum = 0;
+	for(let i=start;i<=end;i+=small){
+	    let Result = fun(i);
+		if(Result=="Error"){break;}
+	    sum+=Result;
+		//console.log(i,sum,(i-start)/(end-start));
+	}
+    return sum*small;
+}
+
+let lambda = 1.5;
+let E = integral(EVPDF,0,Infinity,0.0001);
+
+integral(Variance,0,Infinity,1)
+0.9918506797292851
+integral(Variance,0,Infinity,0.1)
+0.4802737203308599
+integral(Variance,0,Infinity,0.01)
+0.44780277735896884
+integral(Variance,0,Infinity,0.001)
+0.444778027776487
+integral(Variance,0,Infinity,0.0001)
+0.4444777802771709
+integral(Variance,0,Infinity,0.00001)
+0.44444777780066075
+integral(Variance,0,Infinity,0.000001)
+0.44444477774162416
+
+small越小越貼近原函數面積，因此變異數為0.444。
+</pre><br>
+    而標準差就是變異數的平方根，所以標準差=0.444^(1/2)=0.444^(0.5):<br>
+<pre>
+let V=integral(Variance,0,Infinity,0.000001)
+V**0.5: 0.6666669166395046
+</pre><br>
+因此標準差為0.666
+</p>
+-->
+<p>
+	什麼是微分:微分就是在一個函數中x增加了一個無限小的值y會增加多少或減少多少f(x+(1/Infinity))-f(x)，但是這樣給出的答案一定是無限趨近於0，
+	所以為了讓他有意義而不是無限趨近於0，當給出x是多少時我們計算他的切線斜率，也就是(f(x+無限小)-f(x-無限小))/((x+無限小)-(x-無限小))，
+	等於(f(x+無限小)-f(x-無限小))/(無限小*2)，
+	(f(x+(1/Infinity))-f(x-(1/Infinity)))/(2/Infinity)。
+	舉例來說y=2x這個式子將2x對x進行微分，不論x是多少我們都會得到2這個結果。<br>
+
+<pre>
+function n(x) {
+    return 2*x; //differential: 2
+}
+
+function m(x) {
+    return x**2; //differential: 2x
+}
+
+function o(x) {
+    return 3*(x**2)+4*(x**3); //differential: 6x+12(x^2)
+}
+
+function differential(fun,x){
+    let small = 1/(10**9);
+    return (fun(x+small)-fun(x-small))/(small*2);
+}
+
+differential(n,4): 2
+differential(n,8): 2
+differential(m,4): 8
+differential(m,8): 16
+differential(o,9): 1026
+</pre>
+<br>
+    積分就是加總，舉例來說x是1時y是2、x是2時y是6、x是3時y是9，那麼x從1到3的積就是2+6+9=17，在微積分中的積分，舉例來說有一個函數是f(x)，
+	那麼x從0到9的積分就是f(0)+f(0+無限小)+f(0+無限小+無限小)+f(0+無限小+無限小+無限小)......f(9)，也就是直到0一直加無限小等於9就結束。
+	但是這樣得出的結果會是趨近無限大，這沒有意義，所以為了讓他有意義，我們必須再把剛剛得出的結果乘以無限小，這樣才會得出一個有意義的數。
+	積分也可以說是該函數在xy圖中與xy軸的面積。<br>
+<pre>
+function o(x) {
+    return 3*(x**2)+4*(x**3); //integral: x^3+x^4
+}
+
+function integral(fun,start,end,small){
+    if(end&lt;start){return "error: end must bigger than start";}
+    //let small = 1/(10**9);
+	let sum = 0;
+	for(let i=start;i&lt;=end;i+=small){
+	    sum+=fun(i);
+		//console.log(i,sum,(i-start)/(end-start));
+	}
+    return sum*small;
+}
+
+integral(o,8,10,1)
+9699
+integral(o,8,10,0.1)
+6719.369999999992
+integral(o,8,10,0.01)
+6424.703699999954
+integral(o,8,10,0.001)
+6395.270036998788
+integral(o,8,10,0.0001)
+6392.327000364845
+integral(o,8,10,0.00001)
+6392.032699920213
+integral(o,8,10,0.000001)
+6392.0032683476065
+integral(o,8,10,0.0000001)
+6392.00031358065
+
+small越小越貼近原函數面積，所以函數3*(x**2)+4*(x**3)，x從8到10的積分為6392。
+</pre><br>
+積分的相反就是微分，微分的相反就是積分，所以你可以將積分看為反微分，微分看為反積分。<br><br>
+
+
+	指數分布機率密度函數Probability Density Function公式：PDF(X = k) = λ * e^(-λk)，
+	而他的積分所得到的新函數就是累積機率函數(累積分布函數 Cumulative Distribution Function): P(X ≤ k) = 1 - e^(-λk)。
+	而累積分布函數微分就可以得到瞬間機率函數(機率密度函數Probability Density Function)： PDF(X = k) = λ * e^(-λk)。
+	而瞬間機率函數乘以X，X從0到無限的加總，就是從0到無限的積分，就是期望值(所有項目和項目機率的加權平均數，所有機率總和必須為1): E(X = 0~無限) 
+	= 積分(X = 0~無限)[x* (λ * e^(-λx))]，設λ=1.5:
+<pre>
+function EXPDF(x) {
+    let lambda = 1.5;
+	let P = (lambda * Math.exp(-1*lambda*x));
+	if(P&lt;0.00000000000000000001){return "Error";}
+    return x*P;
+}
+
+function integral(fun,start,end,small){
+    if(end&lt;start){return "error: end must bigger than start";}
+    //let small = 1/(10**9);
+	let sum = 0;
+	for(let i=start;i&lt;=end;i+=small){
+	    let E = fun(i);
+		if(E=="Error"){break;}
+	    sum+=E;
+		//console.log(i,sum,(i-start)/(end-start));
+	}
+    return sum*small;
+}
+
+integral(EXPDF,0,Infinity,1)
+0.5545657111178578
+integral(EXPDF,0,Infinity,0.1)
+0.6654180716620743
+integral(EXPDF,0,Infinity,0.01)
+0.6666541668072907
+integral(EXPDF,0,Infinity,0.001)
+0.6666665416666898
+integral(EXPDF,0,Infinity,0.0001)
+0.666666665416275
+
+small越小越貼近原函數面積，lambda=1.5，指數分布的期望值為0.666。
+</pre><br>
+	而變異數就是(X-期望值)^2和項目機率的加權平均數，也就是
+    (X-所有項目和項目機率的加權平均數)^2和項目機率的加權平均數，也就是
+	(所有項目-所有項目和項目機率的加權平均數)^2和項目機率的加權平均數(注意所有機率總和必須為1)，也就是
+	(所有項目-所有項目的期望值)^2和項目機率的加權平均數(注意所有機率總和必須為1)，也就是
+	(X-X取期望值)^2和項目機率的加權平均數(注意所有機率總和必須為1)，也就是
+	(X-X取期望值)^2再繼續取期望值，也就是
+	[(X-X取期望值)^2]取期望值，也就是
+	期望值((X-期望值(X))^2)，也就是
+	E((X-E(X))^2)，也就是
+	積分(X = 0~無限)[((x - X取期望值)^2) * 機率函數(X)]，也就是
+	積分(X = 0~無限)[((x - X取期望值)^2) * 指數分布機率密度函數(X)]，也就是
+	積分(X = 0~無限)[((x - X取期望值)^2) * (λ * e^(-λx))]，也就是
+	積分(X = 0~無限)[((x - 積分(X = 0~無限)[x* (λ * e^(-λx))])^2) * (λ * e^(-λx))]:
+<pre> 
+function exponential_distribution_probability_density_function(lambda,x){
+    let P = (lambda * Math.exp(-1*lambda*x));
+	if(P&lt;0.00000000000000000001){return "Error";}
+	return P;
+}
+
+function EVPDF(x) { //expected value (EV) exponential distribution probability density function (PDF)
+	let P = exponential_distribution_probability_density_function(lambda,x);
+	if(P=="Error"){return "Error";}
+    return x*P;
+}
+
+function Variance(x){
+    let P = exponential_distribution_probability_density_function(lambda,x);
+	if(P=="Error"){return "Error";}
+    return ( (x-E)**2 )*P
+}
+
+function integral(fun,start,end,small){
+    if(end&lt;start){return "error: end must bigger than start";}
+    //let small = 1/(10**9);
+	let sum = 0;
+	for(let i=start;i&lt;=end;i+=small){
+	    let Result = fun(i);
+		if(Result=="Error"){break;}
+	    sum+=Result;
+		//console.log(i,sum,(i-start)/(end-start));
+	}
+    return sum*small;
+}
+
+let lambda = 1.5;
+let E = integral(EVPDF,0,Infinity,0.0001);
+
+integral(Variance,0,Infinity,1)
+0.9918506797292851
+integral(Variance,0,Infinity,0.1)
+0.4802737203308599
+integral(Variance,0,Infinity,0.01)
+0.44780277735896884
+integral(Variance,0,Infinity,0.001)
+0.444778027776487
+integral(Variance,0,Infinity,0.0001)
+0.4444777802771709
+integral(Variance,0,Infinity,0.00001)
+0.44444777780066075
+integral(Variance,0,Infinity,0.000001)
+0.44444477774162416
+
+small越小越貼近原函數面積，因此變異數為0.444。
+</pre><br>
+    而標準差就是變異數的平方根，所以標準差=0.444^(1/2)=0.444^(0.5):<br>
+<pre>
+let V=integral(Variance,0,Infinity,0.000001)
+V**0.5: 0.6666669166395046
+</pre><br>
+因此標準差為0.666
+</p>
+</div>
+
+<script>
+    // 獲取 Lambda
+    function getLambda() {
+        return parseFloat(document.getElementById('lambda-input').value);
+    }
+
+    //Probability Density Function: PDF
+    function ExponentialDistributionProbabilityDensityFunction(lambda, x) {
+        if (x < 0) return 0;
+        return lambda*Math.exp(-lambda * x);
+    }
+
+    // CDF 是 Probability Density Function從0到x的積分(x為正數)
+	// 詳細是橫軸為x縱軸為Probability Density Function(x)，橫軸x從0到x的積分，其中x是正數。
+    function ExponentialDistributionCumulativeDistributionFunction(lambda, x) {
+        if (x < 0) return 0;
+        return 1 - Math.exp(-lambda * x);
+    }
+
+    // 1. 計算期望值、變異數、標準差
+    function calculateStats() {
+        const lambda = getLambda();
+        const statsDiv = document.getElementById('stats-result');
+        
+        if (lambda <= 0) { alert("λ 必須大於 0"); return; }
+
+        const mean = 1 / lambda;
+        const variance = 1 / (lambda * lambda);
+        const stdDev = 1 / lambda;
+
+        statsDiv.style.display = "block";
+        statsDiv.innerHTML = `
+            <b>期望值 (E[X]):</b> ${mean.toFixed(4)} <br>
+            <b>變異數 (Var[X]):</b> ${variance.toFixed(4)} <br>
+            <b>標準差 (σ):</b> ${stdDev.toFixed(4)}
+        `;
+    }
+
+    // 2. 計算小於 k 與大於 k 的機率
+    function calculateKProb() {
+        const lambda = getLambda();
+        const k = parseFloat(document.getElementById('k-input').value);
+        const kDiv = document.getElementById('k-result');
+
+        if (lambda <= 0) { alert("請先輸入有效的 λ"); return; }
+
+        const pLessK = ExponentialDistributionCumulativeDistributionFunction(lambda, k);
+		const PDF = ExponentialDistributionProbabilityDensityFunction(lambda, k);
+        const pGreaterK = 1 - pLessK;
+
+        kDiv.style.display = "block";
+        kDiv.innerHTML = `
+		    <b>此時的機率密度PDF(X = ${k}):</b> ${PDF.toFixed(6)} <br>
+            <b>小於 k 的機率 P(X < ${k}):</b> ${pLessK.toFixed(6)} <br>
+            <b>大於 k 的機率 P(X > ${k}):</b> ${pGreaterK.toFixed(6)}
+        `;
+    }
+
+    // 3. 計算 m 到 n 之間的機率
+    function calculateRangeProb() {
+        const lambda = getLambda();
+        const m = parseFloat(document.getElementById('m-input').value);
+        const n = parseFloat(document.getElementById('n-input').value);
+        const rangeDiv = document.getElementById('range-result');
+
+        if (lambda <= 0) { alert("請先輸入有效的 λ"); return; }
+        if (m > n) { alert("下限 m 不能大於上限 n"); return; }
+
+        const pM = ExponentialDistributionCumulativeDistributionFunction(lambda, m);
+        const pN = ExponentialDistributionCumulativeDistributionFunction(lambda, n);
+        const pRange = pN - pM;
+
+        rangeDiv.style.display = "block";
+        rangeDiv.innerHTML = `
+            <b>區間機率 P(${m} < X < ${n}):</b> ${pRange.toFixed(6)} <br>
+            <small>(計算方式：P(X < ${n}) - P(X < ${m}))</small>
+        `;
+    }
+
+    // 初始化計算
+    window.onload = function() {
+        calculateStats();
+        calculateKProb();
+        calculateRangeProb();
+    };
+</script>
+
+</body>
+</html>
