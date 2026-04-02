@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卜瓦松分佈機率表 (Poisson Distribution Table)</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: auto; }
+        .input-group { margin-bottom: 20px; background: #e9f5ff; padding: 15px; border-radius: 8px; border: 1px solid #bce0ff; }
+        label { margin-right: 10px; font-weight: bold; }
+        input { padding: 5px; margin-right: 20px; width: 100px; }
+        button { padding: 6px 15px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background-color: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #28a745; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .summary { margin-top: 10px; font-style: italic; color: #555; background: #fff3cd; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>卜瓦松分佈機率表生成器</h1>
+    
+    <div class="input-group">
+        <label for="LambdaT-input">平均發生率 (λ):</label>
+        <input type="number" id="LambdaT-input" value="2.5" min="0.001" step="0.1">
+        
+    <!--    <label for="k-max-input">最大顯示次數 (k):</label>
+        <input type="number" id="k-max-input" value="15" min="1" max="100">-->
+        
+        <button onclick="generateTable()">生成表格</button>
+    </div>
+
+    <div id="result-area">
+        <div class="summary" id="stats-summary"></div>
+        <table id="distribution-table">
+            <thead>
+                <tr>
+                    <th>事件發生次數 (k)</th>
+                    <th>機率 P(X = k)</th>
+                    <th>累積機率 P(X ≤ k)</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+</div>
+<script src="../ProbabilityDistribution.js"></script>
+<script>
+    function generateTable() {
+        const LambdaT = parseFloat(document.getElementById('LambdaT-input').value);
+        //const kMax = parseInt(document.getElementById('k-max-input').value);
+		const kMax = Infinity;
+        const tbody = document.querySelector('#distribution-table tbody');
+        const summary = document.getElementById('stats-summary');
+        
+        tbody.innerHTML = '';
+
+        if (isNaN(LambdaT) || LambdaT <= 0) {
+            alert("請輸入大於 0 的 λ 值");
+            return;
+        }
+
+        let cumulativeP = 0;
+		const PMF = PoissonDistributionProbabilityMassFunction;
+        const mean = ExpectedValue(PMF,[LambdaT],0,Infinity).toFixed(2);
+        const variance = Variance(PMF,[LambdaT],0,Infinity).toFixed(2);
+		const stdev = StandardDeviation(PMF,[LambdaT],0,Infinity).toFixed(2);
+        // 卜瓦松分佈的期望值與變異數皆為 λ
+        summary.innerHTML = `期望值 (E[X]): ${LambdaT}<br>計算出的期望值 (E[X]): ${mean} | 變異數 (Var[X]): ${variance} | 標準差 (STDEV[X]): ${stdev}`;
+
+        for (let k = 0; k <= kMax; k++) {
+            const prob = PoissonDistributionProbabilityMassFunction(LambdaT, k);
+            cumulativeP += prob;
+
+            const row = `<tr>
+                <td>${k}</td>
+                <td>${prob.toFixed(6)}</td>
+                <td>${cumulativeP.toFixed(6)}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+            
+            // 如果累積機率已經極其接近 1，且超過了使用者設定的 k，就停止以節省效能
+            //if (cumulativeP > 0.9999999 && k > LambdaT * 2) break;
+			if (prob<(1/(10**7))){break};
+        }
+    }
+
+    // 初始生成
+    window.onload = generateTable;
+</script>
+
+</body>
+</html>

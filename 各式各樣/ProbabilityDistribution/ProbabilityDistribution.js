@@ -32,13 +32,23 @@ function C(N,M) {
 }
 
 function BinomialDistributionProbabilityMassFunction(Total,Success,Failed,M){
+	//離散型隨機變數(Discrete Random Variable)
     return C(Total,M)*(Success**M)*(Failed**(Total-M));
 }
 
+function PoissonDistributionProbabilityMassFunction(LambdaT,M){
+	//離散型隨機變數(Discrete Random Variable)
+	const e = Math.exp(1);
+    return ((LambdaT**M)*(e**(-LambdaT)))/Factorial(M);
+}
+
 function ExpectedValue(ProbabilityMassFunction,PMFargs,Start,End){
+	//注意要算出正確期望值，其機率總和應為1(加權平均數分母為1)。
     let sum=0;
 	for(let i=Start;i<=End;i++){
-	    sum += i * ProbabilityMassFunction(...PMFargs,i); //spread syntax
+		let P = ProbabilityMassFunction(...PMFargs,i); //spread syntax
+		if(P<0.00000000000000000001){break;}
+	    sum += i * P;
 	}
     return sum;
 }
@@ -48,7 +58,8 @@ function Variance(ProbabilityMassFunction,PMFargs,Start,End){
     let sum=0;
 	let P=0;
 	for(let i=Start;i<=End;i++){
-	    P = ProbabilityMassFunction(...PMFargs,i);
+		let P = ProbabilityMassFunction(...PMFargs,i); //spread syntax
+		if(P<0.00000000000000000001){break;}
 	    sum+=((i-E)**2)*P;
 	}
     return sum;
